@@ -10,9 +10,9 @@
 
 **Digital Clock**
  
-![Digital Clock](https://raw.githubusercontent.com/Logboy2000/TIClockApp/refs/heads/main/screenshots/3.png "Digital Clock")
+![Digital Clock](https://raw.githubusercontent.com/Logboy2000/TIClockApp/refs/heads/main/screenshots/2.png "Digital Clock")
 
 **Help Menu**
 
-![Help Menu](https://raw.githubusercontent.com/Logboy2000/TIClockApp/refs/heads/main/screenshots/2.png "Help Menu")
+![Help Menu](https://raw.githubusercontent.com/Logboy2000/TIClockApp/refs/heads/main/screenshots/Help.png "Help Menu")
 
