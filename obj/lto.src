@@ -1,0 +1,2638 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_kb_JustPressed
+_kb_JustPressed:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	iyh, 0
+	ex	de, hl
+	ld	iyl, d
+	ex	de, hl
+	ld.sis	bc, 7
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	call	__sand
+	ld	de, 0
+	ld	e, l
+	ld	d, h
+	ld	hl, _prev_kb_Data
+	add	hl, de
+	ld	a, (hl)
+	ld	hl, (ix + 6)
+	ld.sis	bc, 255
+	call	__sand
+	ld	(ix - 3), hl
+	and	a, l
+	ld	b, a
+	ld	c, 1
+	ex	de, hl
+	ld	e, iyl
+	ld	d, iyh
+	ex	de, hl
+	call	__sshl
+	ld	e, l
+	ld	d, h
+	ld	hl, -720880
+	add	hl, de
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	ld	hl, (ix - 3)
+	and	a, l
+	ld	l, a
+	ld	a, b
+	or	a, a
+	ld	c, -1
+	ld	h, 0
+	ld	e, c
+	jr	z, BB0_2
+	ld	e, h
+BB0_2:
+	ld	a, l
+	or	a, a
+	jr	nz, BB0_4
+	ld	c, h
+BB0_4:
+	ld	a, e
+	and	a, c
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_step
+_step:
+	ld	hl, -21
+	call	__frameset
+	xor	a, a
+	ld	(ix - 3), a
+	ld	de, (_notification_timer)
+	ld	bc, 1
+	push	de
+	pop	hl
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB1_5
+	dec	de
+	ld	(_notification_timer), de
+	ex	de, hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB1_3
+	ld	a, 0
+	jr	BB1_4
+BB1_3:
+	ld	a, -1
+BB1_4:
+	ld	(ix - 3), a
+BB1_5:
+	ld	a, (_seen_help_message)
+	bit	0, a
+	jr	nz, BB1_7
+	ld	hl, _.str.23
+	ld	a, 1
+	ld	(_seen_help_message), a
+	push	hl
+	ld	hl, _notification_msg
+	push	hl
+	call	_sprintf
+	pop	hl
+	pop	hl
+	ld	hl, 5000
+	ld	(_notification_timer), hl
+	ld	a, 1
+	ld	(ix - 3), a
+BB1_7:
+	ld	de, 1
+	ld	hl, _.str.26
+	ld	(ix - 6), hl
+	ld	iy, -720878
+	ld	bc, 8
+BB1_8:
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB1_10
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	ld	hl, _prev_kb_Data
+	add	hl, de
+	ld	(hl), a
+	inc	de
+	lea	iy, iy + 2
+	jr	BB1_8
+BB1_10:
+	call	_kb_Scan
+	ld	iy, -720868
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld.sis	bc, 64
+	call	__sand
+	ld	a, l
+	or	a, a
+	jp	nz, BB1_56
+	ld	(ix - 9), hl
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	bit	1, a
+	lea	de, iy
+	ld	iy, _analog_clock_scale
+	lea	hl, iy + 3
+	ld	(ix - 15), hl
+	ld	iy, _clock_sx
+	lea	hl, iy + 3
+	ld	(ix - 18), hl
+	ld	iy, _clock_sy
+	lea	hl, iy + 3
+	push	de
+	pop	iy
+	ld	(ix - 12), hl
+	jp	z, BB1_16
+	ld	a, (_analog_clock)
+	bit	0, a
+	jr	nz, BB1_14
+	ld	bc, (_clock_sx)
+	ld	hl, (ix - 18)
+	ld	a, (hl)
+	ld	hl, -3355443
+	ld	e, 61
+	call	__fadd
+	ld	(ix - 3), bc
+	ld	iyl, a
+	ld	(ix - 21), iy
+	ld	(_clock_sx), bc
+	ld	(_clock_sx+3), a
+	ld	bc, (_clock_sy)
+	ld	iy, (ix - 12)
+	ld	a, (iy)
+	call	__fadd
+	ld	hl, (ix - 21)
+	ld	(_clock_sy), bc
+	ld	bc, (ix - 3)
+	ld	(_clock_sy+3), a
+	jr	BB1_15
+BB1_14:
+	ld	bc, (_analog_clock_scale)
+	ld	hl, (ix - 15)
+	ld	a, (hl)
+	ld	hl, -3355443
+	ld	e, 61
+	call	__fadd
+	ld	l, a
+	ld	(_analog_clock_scale), bc
+	ld	(_analog_clock_scale+3), a
+BB1_15:
+	push	hl
+	push	bc
+	ld	hl, _.str.24
+	push	hl
+	ld	hl, _notification_msg
+	push	hl
+	call	_sprintf
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 800
+	ld	(_notification_timer), hl
+	ld	a, 1
+	ld	(ix - 3), a
+	ld	iy, -720868
+BB1_16:
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	bit	2, a
+	jp	z, BB1_32
+	ld	a, (_analog_clock)
+	bit	0, a
+	jp	nz, BB1_23
+	ld	bc, (_clock_sx)
+	ld	hl, (ix - 18)
+	ld	a, (hl)
+	ld	hl, -3355443
+	ld	e, -67
+	call	__fadd
+	ld	(ix - 3), bc
+	ld	d, a
+	ld	(_clock_sx), bc
+	ld	(_clock_sx+3), a
+	ld	bc, (_clock_sy)
+	ld	iy, (ix - 12)
+	ld	a, (iy)
+	call	__fadd
+	ld	(ix - 12), bc
+	ld	(_clock_sy), bc
+	ld	(ix - 15), a
+	ld	(_clock_sy+3), a
+	ld	hl, (ix - 3)
+	ld	e, d
+	ld	bc, -8388608
+	ld	iyl, 63
+	ld	a, iyl
+	call	__fcmp
+	jp	p, BB1_20
+	ld	(_clock_sx), bc
+	ld	a, iyl
+	ld	(_clock_sx+3), a
+	ld	(ix - 3), bc
+	ld	d, iyl
+BB1_20:
+	ld	hl, (ix - 12)
+	ld	e, (ix - 15)
+	ld	a, iyl
+	call	__fcmp
+	jp	p, BB1_22
+	ld	(_clock_sy), bc
+	ld	a, iyl
+	ld	(_clock_sy+3), a
+BB1_22:
+	ld	bc, (ix - 3)
+	ld	iyl, d
+	jr	BB1_31
+BB1_23:
+	ld	bc, (_analog_clock_scale)
+	ld	hl, (ix - 15)
+	ld	a, (hl)
+	ld	hl, -3355443
+	ld	e, -67
+	call	__fadd
+	push	bc
+	pop	hl
+	ld	e, a
+	ld	bc, -8388608
+	ld	iyl, 63
+	ld	a, iyl
+	call	__fcmp
+	jp	m, BB1_25
+	ld	a, 0
+	jr	BB1_26
+BB1_25:
+	ld	a, 1
+BB1_26:
+	bit	0, a
+	jr	nz, BB1_28
+	push	hl
+	pop	bc
+BB1_28:
+	bit	0, a
+	jr	nz, BB1_30
+	ld	iyl, e
+BB1_30:
+	ld	(_analog_clock_scale), bc
+	ld	a, iyl
+	ld	(_analog_clock_scale+3), a
+BB1_31:
+	push	iy
+	push	bc
+	ld	hl, _.str.24
+	push	hl
+	ld	hl, _notification_msg
+	push	hl
+	call	_sprintf
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 800
+	ld	(_notification_timer), hl
+	ld	a, 1
+	ld	(ix - 3), a
+BB1_32:
+	ld	hl, 272
+	push	hl
+	call	_kb_JustPressed
+	pop	hl
+	bit	0, a
+	jr	z, BB1_36
+	ld	a, (_ampm_clock)
+	ld	l, a
+	xor	a, 1
+	ld	(_ampm_clock), a
+	bit	0, l
+	ld	hl, _.str.26
+	jr	z, BB1_35
+	ld	hl, _.str.27
+BB1_35:
+	push	hl
+	ld	hl, _.str.25
+	push	hl
+	ld	hl, _notification_msg
+	push	hl
+	call	_sprintf
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 800
+	ld	(_notification_timer), hl
+	ld	a, 1
+	ld	(ix - 3), a
+BB1_36:
+	ld	hl, 264
+	push	hl
+	call	_kb_JustPressed
+	pop	hl
+	bit	0, a
+	jr	z, BB1_40
+	ld	a, (_show_secs)
+	ld	l, a
+	xor	a, 1
+	ld	(_show_secs), a
+	bit	0, l
+	ld	hl, _.str.26
+	jr	z, BB1_39
+	ld	hl, _.str.27
+BB1_39:
+	push	hl
+	ld	hl, _.str.28
+	push	hl
+	ld	hl, _notification_msg
+	push	hl
+	call	_sprintf
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 800
+	ld	(_notification_timer), hl
+	ld	a, 1
+	ld	(ix - 3), a
+BB1_40:
+	ld	hl, 260
+	push	hl
+	call	_kb_JustPressed
+	pop	hl
+	bit	0, a
+	jr	z, BB1_44
+	ld	a, (_show_date)
+	ld	l, a
+	xor	a, 1
+	ld	(_show_date), a
+	bit	0, l
+	jr	z, BB1_43
+	ld	hl, _.str.27
+	ld	(ix - 6), hl
+BB1_43:
+	ld	hl, (ix - 6)
+	push	hl
+	ld	hl, _.str.29
+	push	hl
+	ld	hl, _notification_msg
+	push	hl
+	call	_sprintf
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 800
+	ld	(_notification_timer), hl
+	ld	a, 1
+	ld	(ix - 3), a
+BB1_44:
+	ld	hl, 258
+	push	hl
+	call	_kb_JustPressed
+	pop	hl
+	bit	0, a
+	jr	z, BB1_48
+	ld	a, (_analog_clock)
+	ld	l, a
+	xor	a, 1
+	ld	(_analog_clock), a
+	bit	0, l
+	ld	hl, _.str.31
+	jr	z, BB1_47
+	ld	hl, _.str.32
+BB1_47:
+	push	hl
+	ld	hl, _.str.30
+	push	hl
+	ld	hl, _notification_msg
+	push	hl
+	call	_sprintf
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 800
+	ld	(_notification_timer), hl
+	ld	a, 1
+	ld	(ix - 3), a
+BB1_48:
+	ld	hl, 257
+	push	hl
+	call	_kb_JustPressed
+	pop	hl
+	bit	0, a
+	jr	z, BB1_50
+	ld	a, (_show_help)
+	xor	a, 1
+	ld	(_show_help), a
+	or	a, a
+	sbc	hl, hl
+	ld	(_notification_timer), hl
+	ld	a, 1
+	ld	(ix - 3), a
+BB1_50:
+	ld	hl, 1537
+	push	hl
+	call	_kb_JustPressed
+	pop	hl
+	bit	0, a
+	jr	z, BB1_52
+	ld	a, (_show_help)
+	xor	a, 1
+	ld	(_show_help), a
+	ld	a, 1
+	ld	(ix - 3), a
+BB1_52:
+	ld	hl, _hrs
+	push	hl
+	ld	hl, _mins
+	push	hl
+	ld	hl, _secs
+	push	hl
+	call	_boot_GetTime
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	a, (_last_secs)
+	ld	e, a
+	ld	a, (_secs)
+	ld	l, a
+	ld	a, e
+	cp	a, l
+	jr	nz, BB1_54
+	bit	0, (ix - 3)
+	ld	hl, (ix - 9)
+	jr	nz, BB1_55
+	jr	BB1_56
+BB1_54:
+	ld	a, l
+	ld	(_last_secs), a
+BB1_55:
+	call	_draw
+	ld	hl, (ix - 9)
+BB1_56:
+	ld	a, l
+	or	a, a
+	ld	a, -1
+	jr	z, BB1_58
+	ld	a, 0
+BB1_58:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_draw
+_draw:
+	ld	hl, -70
+	call	__frameset
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_FillScreen
+	pop	hl
+	ld	a, (_show_help)
+	bit	0, a
+	jp	z, BB2_2
+	ld	hl, 15
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_SetTextBGColor
+	pop	hl
+	ld	hl, 1
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	ld	hl, 10
+	push	hl
+	push	hl
+	ld	hl, _.str.33
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 20
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, _.str.34
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 30
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, _.str.35
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 40
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, _.str.36
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 50
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, _.str.37
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 60
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, _.str.38
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 70
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, _.str.39
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 80
+	push	hl
+	ld	hl, 10
+	push	hl
+	ld	hl, _.str.40
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+BB2_2:
+	ld	hl, 160
+	ld	a, (_analog_clock)
+	bit	0, a
+	jr	nz, BB2_4
+	ld	hl, (_clock_sx)
+	ld	(ix - 57), hl
+	ld	a, (_clock_sx+3)
+	ld	e, a
+	ld	bc, (_clock_sy)
+	ld	a, (_clock_sy+3)
+	ld	l, a
+	ld	iy, 1
+	push	iy
+	push	hl
+	push	bc
+	push	de
+	ld	hl, (ix - 57)
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	push	hl
+	call	_drawClock
+	ld	hl, 21
+	add	hl, sp
+	ld	sp, hl
+	jr	BB2_5
+BB2_4:
+	ld	iy, 120
+	ld	de, (_analog_clock_scale)
+	ld	a, (_analog_clock_scale+3)
+	ld	c, a
+	push	bc
+	push	de
+	push	iy
+	push	hl
+	call	_drawAnalogClock
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+BB2_5:
+	ld	a, (_show_date)
+	bit	0, a
+	jp	z, BB2_10
+	lea	hl, ix - 54
+	ld	(ix - 57), hl
+	ld	hl, 15
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_SetTextBGColor
+	pop	hl
+	ld	hl, 1
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	pea	ix - 4
+	pea	ix - 2
+	pea	ix - 1
+	call	_boot_GetDate
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	a, (ix - 1)
+	ld	(ix - 61), a
+	ld	de, 0
+	push	de
+	pop	hl
+	ld	l, a
+	ld	e, (ix - 2)
+	ld	iy, (ix - 4)
+	ld	bc, 0
+	ld	(ix - 60), bc
+	ld	c, iyl
+	ld	b, iyh
+	ld	(ix - 70), bc
+	push	bc
+	ld	(ix - 67), de
+	push	de
+	ld	(ix - 64), hl
+	push	hl
+	call	_getDayOfWeek
+	pop	de
+	pop	de
+	pop	de
+	ld	a, (ix - 61)
+	ld	c, 10
+	call	__bremu
+	ld	e, a
+	ld	a, (ix - 61)
+	add	a, -14
+	ld	c, a
+	ld	a, e
+	cp	a, 4
+	sbc	a, a
+	ld	d, a
+	ld	a, c
+	cp	a, -3
+	sbc	a, a
+	ld	c, a
+	ld	a, d
+	and	a, c
+	bit	0, a
+	jr	nz, BB2_8
+	ld	de, 0
+	ld	(ix - 60), de
+	jr	BB2_9
+BB2_8:
+	ld	bc, (ix - 60)
+	ld	c, e
+	ld	(ix - 60), bc
+BB2_9:
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _days_of_week
+	add	hl, de
+	ld	iy, (hl)
+	ld	hl, (ix - 67)
+	dec	hl
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _months_of_year
+	add	hl, de
+	ld	de, (hl)
+	ld	hl, (ix - 60)
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	hl, _date_postfixes
+	add	hl, bc
+	ld	hl, (hl)
+	ld	bc, (ix - 70)
+	push	bc
+	push	hl
+	ld	hl, (ix - 64)
+	push	hl
+	push	de
+	push	iy
+	ld	hl, _.str.41
+	push	hl
+	ld	hl, (ix - 57)
+	push	hl
+	call	_sprintf
+	ld	hl, 21
+	add	hl, sp
+	ld	sp, hl
+	ld	hl, (ix - 57)
+	push	hl
+	call	_gfx_GetStringWidth
+	pop	de
+	ld	c, 1
+	call	__ishru
+	push	hl
+	pop	de
+	ld	hl, 160
+	or	a, a
+	sbc	hl, de
+	ld	de, 220
+	push	de
+	push	hl
+	ld	hl, (ix - 57)
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+BB2_10:
+	ld	hl, (_notification_timer)
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB2_12
+	ld	hl, 1
+	push	hl
+	push	hl
+	call	_gfx_SetTextScale
+	pop	hl
+	pop	hl
+	ld	hl, 15
+	push	hl
+	call	_gfx_SetTextFGColor
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_SetTextBGColor
+	pop	hl
+	ld	hl, 5
+	push	hl
+	push	hl
+	ld	hl, _notification_msg
+	push	hl
+	call	_gfx_PrintStringXY
+	pop	hl
+	pop	hl
+	pop	hl
+BB2_12:
+	ld	hl, 1
+	push	hl
+	call	_gfx_Blit
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_drawAnalogClock
+_drawAnalogClock:
+	ld	hl, -85
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 21), hl
+	ld	hl, (ix + 9)
+	ld	(ix - 24), hl
+	ld	hl, (ix + 12)
+	ld	(ix - 6), hl
+	ld	a, (ix + 15)
+	ld	(ix - 9), a
+	ld	hl, _h24_sin
+	ld	(ix - 18), hl
+	ld	hl, _h24_cos
+	ld	(ix - 27), hl
+	ld	a, (_trig_initialized)
+	bit	0, a
+	jp	nz, BB3_8
+	ld	de, 60
+	ld	hl, _min_sin
+	push	hl
+	pop	iy
+	ld	hl, _min_cos
+	ld	(ix - 3), hl
+	ld	bc, 0
+BB3_2:
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jr	z, BB3_4
+	push	bc
+	pop	hl
+	ld	(ix - 15), iy
+	push	bc
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	(ix - 12), bc
+	ld	bc, (ix - 12)
+	ld	a, l
+	call	__ltof
+	ld	hl, -2721980
+	ld	e, 61
+	call	__fmul
+	ld	hl, -3600432
+	ld	e, -65
+	call	__fadd
+	ld	(ix - 30), bc
+	ld	l, a
+	ld	(ix - 33), hl
+	push	hl
+	push	bc
+	call	_cos
+	pop	bc
+	pop	bc
+	ld	iy, (ix - 3)
+	ld	(iy), hl
+	ld	(iy + 3), e
+	ld	hl, (ix - 33)
+	push	hl
+	ld	hl, (ix - 30)
+	push	hl
+	call	_sin
+	ld	iy, (ix - 15)
+	pop	bc
+	pop	bc
+	ld	bc, (ix - 12)
+	ld	(iy), hl
+	ld	(iy + 3), e
+	lea	hl, iy
+	ld	de, 60
+	inc	bc
+	ld	iy, (ix - 3)
+	lea	iy, iy + 4
+	ld	(ix - 3), iy
+	push	hl
+	pop	iy
+	lea	iy, iy + 4
+	jr	BB3_2
+BB3_4:
+	ld	de, 24
+	ld	hl, _h24_sin
+	push	hl
+	pop	iy
+	ld	hl, _h24_cos
+	ld	(ix - 3), hl
+	ld	bc, 0
+BB3_5:
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jr	z, BB3_7
+	push	bc
+	pop	hl
+	ld	(ix - 15), iy
+	push	bc
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	(ix - 12), bc
+	ld	bc, (ix - 12)
+	ld	a, l
+	call	__ltof
+	ld	hl, -7992693
+	ld	e, 62
+	call	__fmul
+	ld	hl, -3600432
+	ld	e, -65
+	call	__fadd
+	ld	(ix - 30), bc
+	ld	l, a
+	ld	(ix - 33), hl
+	push	hl
+	push	bc
+	call	_cos
+	pop	bc
+	pop	bc
+	ld	iy, (ix - 3)
+	ld	(iy), hl
+	ld	(iy + 3), e
+	ld	hl, (ix - 33)
+	push	hl
+	ld	hl, (ix - 30)
+	push	hl
+	call	_sin
+	ld	iy, (ix - 15)
+	pop	bc
+	pop	bc
+	ld	bc, (ix - 12)
+	ld	(iy), hl
+	ld	(iy + 3), e
+	lea	hl, iy
+	ld	de, 24
+	inc	bc
+	ld	iy, (ix - 3)
+	lea	iy, iy + 4
+	ld	(ix - 3), iy
+	push	hl
+	pop	iy
+	lea	iy, iy + 4
+	jr	BB3_5
+BB3_7:
+	ld	a, 1
+	ld	(_trig_initialized), a
+BB3_8:
+	ld	a, (_ampm_clock)
+	ld	(ix - 54), a
+	bit	0, a
+	jr	z, BB3_10
+	ld	hl, 12
+	jr	BB3_11
+BB3_10:
+	ld	hl, 24
+BB3_11:
+	ld	a, (_hrs)
+	ld	(ix - 57), a
+	ld	a, (_mins)
+	ld	bc, 0
+	ld	c, a
+	ld	e, b
+	ld	a, e
+	call	__ultof
+	ld	(ix - 39), bc
+	ld	d, a
+	push	hl
+	pop	iy
+	push	hl
+	pop	bc
+	ld	(ix - 36), bc
+	add	iy, iy
+	sbc	hl, hl
+	ld	a, l
+	call	__ltof
+	ld	(ix - 61), bc
+	ld	(ix - 62), a
+	ld	a, (_secs)
+	ld	bc, 0
+	ld	c, a
+	ld	a, e
+	call	__ultof
+	ld	(ix - 84), bc
+	ld	(ix - 85), a
+	ld	hl, 7340032
+	ld	iyl, 66
+	ld	e, iyl
+	call	__fdiv
+	ld	hl, (ix - 39)
+	ld	(ix - 58), d
+	ld	e, d
+	call	__fadd
+	ld	(ix - 52), bc
+	ld	(ix - 53), a
+	ld	bc, (ix - 6)
+	ld	a, (ix - 9)
+	ld	hl, 4718592
+	ld	e, iyl
+	call	__fmul
+	call	__ftol
+	ld	(ix - 15), bc
+	scf
+	sbc	hl, hl
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, (ix - 15)
+	push	hl
+	ld	hl, (ix - 24)
+	push	hl
+	ld	hl, (ix - 21)
+	push	hl
+	call	_gfx_Circle
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 21)
+	push	hl
+	pop	iy
+	push	hl
+	pop	bc
+	add	iy, iy
+	sbc	hl, hl
+	ld	a, l
+	call	__ltof
+	ld	(ix - 9), bc
+	ld	(ix - 12), a
+	ld	hl, (ix - 15)
+	ld	de, -10
+	add	hl, de
+	push	hl
+	pop	bc
+	push	bc
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	a, l
+	call	__ltof
+	ld	(ix - 48), bc
+	ld	(ix - 49), a
+	ld	hl, (ix - 24)
+	push	hl
+	pop	iy
+	push	hl
+	pop	bc
+	add	iy, iy
+	sbc	hl, hl
+	ld	a, l
+	call	__ltof
+	ld	(ix - 3), bc
+	ld	(ix - 6), a
+	ld	hl, (ix - 15)
+	ld	de, -20
+	add	hl, de
+	push	hl
+	pop	bc
+	push	bc
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	a, l
+	call	__ltof
+	ld	(ix - 65), bc
+	ld	(ix - 68), a
+	ld	de, (ix - 36)
+	ld	hl, _min_cos
+	ld	(ix - 30), hl
+	ld	hl, _min_sin
+	ld	(ix - 33), hl
+BB3_12:
+	push	de
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jp	z, BB3_18
+	ld	a, (ix - 54)
+	xor	a, 1
+	bit	0, a
+	ld	iy, (ix - 27)
+	jr	nz, BB3_15
+	ld	iy, (ix - 30)
+BB3_15:
+	ld	(ix - 71), de
+	ld	bc, (iy)
+	ld	e, (iy + 3)
+	bit	0, a
+	ld	iy, (ix - 18)
+	jr	nz, BB3_17
+	ld	iy, (ix - 33)
+BB3_17:
+	ld	hl, (iy)
+	ld	(ix - 42), hl
+	ld	a, (iy + 3)
+	ld	(ix - 45), a
+	ld	(ix - 80), bc
+	ld	(ix - 81), e
+	ld	a, e
+	ld	iy, (ix - 48)
+	lea	hl, iy
+	ld	d, (ix - 49)
+	ld	e, d
+	call	__fmul
+	ld	hl, (ix - 9)
+	ld	e, (ix - 12)
+	call	__fadd
+	call	__ftol
+	ld	(ix - 74), bc
+	ld	bc, (ix - 42)
+	ld	a, (ix - 45)
+	lea	hl, iy
+	ld	e, d
+	call	__fmul
+	ld	hl, (ix - 3)
+	ld	e, (ix - 6)
+	call	__fadd
+	call	__ftol
+	ld	(ix - 77), bc
+	ld	bc, (ix - 80)
+	ld	a, (ix - 81)
+	ld	iy, (ix - 65)
+	lea	hl, iy
+	ld	d, (ix - 68)
+	ld	e, d
+	call	__fmul
+	ld	hl, (ix - 9)
+	ld	e, (ix - 12)
+	call	__fadd
+	call	__ftol
+	ld	(ix - 80), bc
+	ld	bc, (ix - 42)
+	ld	a, (ix - 45)
+	lea	hl, iy
+	ld	e, d
+	call	__fmul
+	ld	hl, (ix - 3)
+	ld	e, (ix - 6)
+	call	__fadd
+	call	__ftol
+	push	bc
+	ld	hl, (ix - 80)
+	push	hl
+	ld	hl, (ix - 77)
+	push	hl
+	ld	hl, (ix - 74)
+	push	hl
+	call	_gfx_Line
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	iy, (ix - 33)
+	lea	iy, iy + 20
+	ld	(ix - 33), iy
+	ld	iy, (ix - 30)
+	lea	iy, iy + 20
+	ld	(ix - 30), iy
+	ld	iy, (ix - 27)
+	lea	iy, iy + 4
+	ld	(ix - 27), iy
+	ld	iy, (ix - 18)
+	lea	iy, iy + 4
+	ld	(ix - 18), iy
+	ld	de, (ix - 71)
+	dec	de
+	jp	BB3_12
+BB3_18:
+	ld	a, (ix - 57)
+	ld	bc, (ix - 36)
+	call	__bremu
+	ld	iy, 0
+	ld	iyl, a
+	ld	bc, (ix - 39)
+	ld	a, (ix - 58)
+	ld	hl, 7340032
+	ld	e, 66
+	call	__fdiv
+	ld	(ix - 18), bc
+	ld	d, a
+	ld	bc, -3600432
+	ld	a, 64
+	ld	hl, (ix - 61)
+	ld	e, (ix - 62)
+	call	__fdiv
+	ld	(ix - 39), bc
+	ld	(ix - 42), a
+	xor	a, a
+	lea	bc, iy
+	call	__ultof
+	push	bc
+	pop	hl
+	ld	e, a
+	ld	bc, (ix - 18)
+	ld	a, d
+	call	__fadd
+	ld	(ix - 45), bc
+	ld	(ix - 54), a
+	ld	hl, 15
+	push	hl
+	call	_gfx_SetColor
+	pop	hl
+	ld	hl, (ix - 15)
+	ld	de, -5
+	add	hl, de
+	push	hl
+	pop	bc
+	push	bc
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	a, l
+	call	__ltof
+	ld	(ix - 57), bc
+	ld	(ix - 58), a
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 18), hl
+	ld	iyl, 0
+	push	af
+	ld	a, iyl
+	ld	(ix - 27), a
+	pop	af
+	ld	e, 5
+BB3_19:
+	ld	b, (ix - 27)
+	ld	c, e
+	call	__bdivu
+	ld	d, a
+	ld	l, e
+	ld	h, d
+	mlt	hl
+	ld	a, iyl
+	add	a, l
+	ld	iyh, a
+	ld	hl, (ix - 18)
+	ld	bc, 240
+	or	a, a
+	sbc	hl, bc
+	jp	z, BB3_24
+	ld	a, (_ampm_clock)
+	bit	0, a
+	jr	z, BB3_22
+	ld	a, iyh
+	or	a, a
+	jp	z, BB3_23
+BB3_22:
+	push	af
+	ld	a, iyl
+	ld	(ix - 62), a
+	pop	af
+	ld	bc, (ix - 18)
+	ld	(ix - 61), de
+	ld	iy, _min_cos
+	add	iy, bc
+	ld	de, (iy)
+	ld	(ix - 71), de
+	ld	a, (iy + 3)
+	ld	(ix - 36), a
+	ld	iy, _min_sin
+	add	iy, bc
+	ld	hl, (iy)
+	ld	(ix - 30), hl
+	ld	a, (iy + 3)
+	ld	(ix - 33), a
+	push	de
+	pop	bc
+	ld	a, (ix - 36)
+	ld	iy, (ix - 57)
+	lea	hl, iy
+	ld	d, (ix - 58)
+	ld	e, d
+	call	__fmul
+	ld	hl, (ix - 9)
+	ld	e, (ix - 12)
+	call	__fadd
+	call	__ftol
+	ld	(ix - 65), bc
+	ld	bc, (ix - 30)
+	ld	a, (ix - 33)
+	lea	hl, iy
+	ld	e, d
+	call	__fmul
+	ld	hl, (ix - 3)
+	ld	e, (ix - 6)
+	call	__fadd
+	call	__ftol
+	ld	(ix - 68), bc
+	ld	bc, (ix - 71)
+	ld	a, (ix - 36)
+	ld	iy, (ix - 48)
+	lea	hl, iy
+	ld	d, (ix - 49)
+	ld	e, d
+	call	__fmul
+	ld	hl, (ix - 9)
+	ld	e, (ix - 12)
+	call	__fadd
+	call	__ftol
+	ld	(ix - 36), bc
+	ld	bc, (ix - 30)
+	ld	a, (ix - 33)
+	lea	hl, iy
+	ld	e, d
+	call	__fmul
+	ld	hl, (ix - 3)
+	ld	e, (ix - 6)
+	call	__fadd
+	call	__ftol
+	push	bc
+	ld	hl, (ix - 36)
+	push	hl
+	ld	hl, (ix - 68)
+	push	hl
+	ld	hl, (ix - 65)
+	push	hl
+	call	_gfx_Line
+	push	af
+	ld	a, (ix - 62)
+	ld	iyl, a
+	pop	af
+	ld	de, (ix - 61)
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+BB3_23:
+	dec	iyl
+	ld	a, (ix - 27)
+	inc	a
+	ld	(ix - 27), a
+	ld	bc, 4
+	ld	hl, (ix - 18)
+	add	hl, bc
+	ld	(ix - 18), hl
+	jp	BB3_19
+BB3_24:
+	ld	bc, (ix - 52)
+	ld	a, (ix - 53)
+	ld	hl, -2721980
+	ld	e, 61
+	call	__fmul
+	ld	iy, -3600432
+	lea	hl, iy
+	ld	d, -65
+	ld	e, d
+	call	__fadd
+	ld	(ix - 18), bc
+	ld	l, a
+	ld	(ix - 27), hl
+	ld	bc, (ix - 45)
+	ld	a, (ix - 54)
+	ld	hl, (ix - 39)
+	ld	e, (ix - 42)
+	call	__fmul
+	lea	hl, iy
+	ld	e, d
+	call	__fadd
+	ld	(ix - 33), bc
+	ld	l, a
+	ld	(ix - 36), hl
+	push	hl
+	push	bc
+	call	_cos
+	ld	(ix - 39), hl
+	ld	d, e
+	pop	hl
+	pop	hl
+	ld	bc, (ix - 15)
+	push	bc
+	pop	hl
+	push	bc
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	ld	a, l
+	call	__ltof
+	ld	(ix - 15), bc
+	ld	(ix - 30), a
+	or	a, a
+	sbc	hl, hl
+	ld	e, 63
+	call	__fmul
+	push	bc
+	pop	hl
+	ld	(ix - 42), hl
+	ld	e, a
+	ld	(ix - 45), e
+	ld	bc, (ix - 39)
+	ld	a, d
+	call	__fmul
+	ld	hl, (ix - 9)
+	ld	e, (ix - 12)
+	call	__fadd
+	call	__ftol
+	ld	(ix - 39), bc
+	ld	hl, (ix - 36)
+	push	hl
+	ld	hl, (ix - 33)
+	push	hl
+	call	_sin
+	push	hl
+	pop	bc
+	ld	a, e
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 42)
+	ld	e, (ix - 45)
+	call	__fmul
+	ld	hl, (ix - 3)
+	ld	e, (ix - 6)
+	call	__fadd
+	call	__ftol
+	push	bc
+	ld	hl, (ix - 39)
+	push	hl
+	ld	hl, (ix - 24)
+	push	hl
+	ld	hl, (ix - 21)
+	push	hl
+	call	_gfx_Line
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 27)
+	push	hl
+	ld	hl, (ix - 18)
+	push	hl
+	call	_cos
+	push	hl
+	pop	iy
+	ld	d, e
+	pop	hl
+	pop	hl
+	ld	bc, (ix - 15)
+	ld	a, (ix - 30)
+	ld	hl, 5033165
+	ld	e, 63
+	call	__fmul
+	push	bc
+	pop	hl
+	ld	(ix - 36), hl
+	ld	e, a
+	ld	(ix - 39), e
+	lea	bc, iy
+	ld	a, d
+	call	__fmul
+	ld	hl, (ix - 9)
+	ld	e, (ix - 12)
+	call	__fadd
+	call	__ftol
+	ld	(ix - 33), bc
+	ld	hl, (ix - 27)
+	push	hl
+	ld	hl, (ix - 18)
+	push	hl
+	call	_sin
+	push	hl
+	pop	bc
+	ld	a, e
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 36)
+	ld	e, (ix - 39)
+	call	__fmul
+	ld	hl, (ix - 3)
+	ld	e, (ix - 6)
+	call	__fadd
+	call	__ftol
+	push	bc
+	ld	hl, (ix - 33)
+	push	hl
+	ld	hl, (ix - 24)
+	push	hl
+	ld	hl, (ix - 21)
+	push	hl
+	call	_gfx_Line
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	a, (_show_secs)
+	bit	0, a
+	jp	z, BB3_26
+	ld	bc, (ix - 84)
+	ld	a, (ix - 85)
+	ld	hl, -2721980
+	ld	e, 61
+	call	__fmul
+	ld	hl, -3600432
+	ld	e, -65
+	call	__fadd
+	ld	(ix - 18), bc
+	ld	l, a
+	ld	(ix - 27), hl
+	push	hl
+	push	bc
+	call	_cos
+	push	hl
+	pop	iy
+	ld	d, e
+	pop	hl
+	pop	hl
+	ld	bc, (ix - 15)
+	ld	a, (ix - 30)
+	ld	hl, 6710886
+	ld	e, 63
+	call	__fmul
+	push	bc
+	pop	hl
+	ld	(ix - 15), hl
+	ld	e, a
+	ld	(ix - 30), e
+	lea	bc, iy
+	ld	a, d
+	call	__fmul
+	ld	hl, (ix - 9)
+	ld	e, (ix - 12)
+	call	__fadd
+	call	__ftol
+	ld	(ix - 9), bc
+	ld	hl, (ix - 27)
+	push	hl
+	ld	hl, (ix - 18)
+	push	hl
+	call	_sin
+	push	hl
+	pop	bc
+	ld	a, e
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 15)
+	ld	e, (ix - 30)
+	call	__fmul
+	ld	hl, (ix - 3)
+	ld	e, (ix - 6)
+	call	__fadd
+	call	__ftol
+	push	bc
+	ld	hl, (ix - 9)
+	push	hl
+	ld	hl, (ix - 24)
+	push	hl
+	ld	hl, (ix - 21)
+	push	hl
+	call	_gfx_Line
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+BB3_26:
+	ld	(ix + 6), 0
+	ld	sp, ix
+	pop	ix
+	jp	_gfx_SetColor
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_drawClock
+_drawClock:
+	ld	hl, -19
+	call	__frameset
+	ld	a, (_hrs)
+	ld	l, a
+	ld	a, (_ampm_clock)
+	bit	0, a
+	jr	nz, BB4_2
+	ld	(ix - 16), l
+	jr	BB4_6
+BB4_2:
+	ld	a, l
+	add	a, -12
+	ld	(ix - 16), a
+	ld	a, l
+	cp	a, 13
+	jr	nc, BB4_4
+	ld	(ix - 16), l
+BB4_4:
+	ld	a, l
+	or	a, a
+	jr	nz, BB4_6
+	ld	a, 12
+	ld	(ix - 16), a
+BB4_6:
+	ld	a, (ix + 15)
+	ld	bc, (ix + 18)
+	ld	e, 65
+	ld	d, 10
+	bit	0, (ix + 24)
+	jr	z, BB4_9
+	ld	hl, 6291456
+	ld	a, (ix + 21)
+	ld	d, e
+	call	__fmul
+	call	__ftol
+	ld	(ix - 6), bc
+	ld	a, (_show_secs)
+	xor	a, 1
+	bit	0, a
+	jr	nz, BB4_10
+	ld	bc, 0
+	jr	BB4_11
+BB4_9:
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	ld	hl, (ix + 9)
+	ld	(ix - 6), hl
+	ld	iy, (ix + 12)
+	jr	BB4_15
+BB4_10:
+	ld	bc, -6291456
+BB4_11:
+	bit	0, a
+	ld	hl, (ix + 12)
+	jr	nz, BB4_13
+	ld	a, d
+	jr	BB4_14
+BB4_13:
+	ld	a, 64
+BB4_14:
+	push	hl
+	pop	iy
+	ld	e, (ix + 15)
+	call	__fmul
+	or	a, a
+	sbc	hl, hl
+	ld	e, d
+	call	__fmul
+	call	__ftol
+	ld	a, (ix + 15)
+	push	bc
+	pop	hl
+	ld	bc, -2
+	call	__idivs
+	ld	de, 160
+	add	hl, de
+	ld	(ix - 3), hl
+	ld	hl, (ix - 6)
+	call	__idivs
+	ld	de, 120
+	add	hl, de
+	ld	(ix - 6), hl
+	ld	d, 10
+	ld	e, 65
+BB4_15:
+	lea	bc, iy
+	ld	iyl, a
+	or	a, a
+	sbc	hl, hl
+	call	__fmul
+	call	__ftol
+	ld	(ix - 12), bc
+	ld	b, (ix - 16)
+	ld	c, d
+	call	__bdivu
+	ld	l, -10
+	ld	h, a
+	ld	(ix - 19), hl
+	call	__bremu
+	ld	l, a
+	ld	bc, (ix + 12)
+	ld	a, iyl
+	call	__ftol
+	ld	(ix - 9), bc
+	ld	bc, (ix + 18)
+	ld	a, (ix + 21)
+	call	__ftol
+	ld	(ix - 15), bc
+	push	bc
+	ld	bc, (ix - 9)
+	push	bc
+	ld	bc, (ix - 6)
+	push	bc
+	ld	bc, (ix - 3)
+	push	bc
+	push	hl
+	call	_drawNumber
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 19)
+	mlt	hl
+	ld	a, l
+	add	a, (ix - 16)
+	ld	e, a
+	ld	hl, (ix - 3)
+	ld	bc, (ix - 12)
+	add	hl, bc
+	ld	bc, (ix - 15)
+	push	bc
+	ld	bc, (ix - 9)
+	push	bc
+	ld	bc, (ix - 6)
+	push	bc
+	push	hl
+	push	de
+	call	_drawNumber
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	c, 1
+	ld	hl, (ix - 12)
+	call	__ishl
+	push	hl
+	pop	de
+	ld	hl, (ix - 3)
+	add	hl, de
+	ld	de, (ix - 15)
+	push	de
+	ld	de, (ix - 9)
+	push	de
+	ld	de, (ix - 6)
+	push	de
+	push	hl
+	call	_drawColon
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	a, (_mins)
+	ld	b, a
+	ld	c, 10
+	call	__bdivu
+	call	__bremu
+	ld	e, a
+	ld	hl, (ix - 12)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	hl, (ix - 3)
+	add	hl, bc
+	ld	bc, (ix - 15)
+	push	bc
+	ld	bc, (ix - 9)
+	push	bc
+	ld	bc, (ix - 6)
+	push	bc
+	push	hl
+	push	de
+	call	_drawNumber
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	a, (_mins)
+	ld	c, 10
+	call	__bremu
+	ld	e, a
+	ld	c, 2
+	ld	hl, (ix - 12)
+	call	__ishl
+	push	hl
+	pop	bc
+	ld	hl, (ix - 3)
+	add	hl, bc
+	ld	bc, (ix - 15)
+	push	bc
+	ld	bc, (ix - 9)
+	push	bc
+	ld	bc, (ix - 6)
+	push	bc
+	push	hl
+	push	de
+	call	_drawNumber
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	a, (_show_secs)
+	bit	0, a
+	jp	z, BB4_17
+	ld	bc, 5
+	ld	hl, (ix - 12)
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, (ix - 3)
+	add	hl, de
+	ld	de, (ix - 15)
+	push	de
+	ld	de, (ix - 9)
+	push	de
+	ld	de, (ix - 6)
+	push	de
+	push	hl
+	call	_drawColon
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	a, (_secs)
+	ld	b, a
+	ld	a, 10
+	ld	c, a
+	call	__bdivu
+	ld	c, 10
+	call	__bremu
+	ld	e, a
+	ld	hl, (ix - 12)
+	ld	bc, 6
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	hl, (ix - 3)
+	add	hl, bc
+	ld	bc, (ix - 15)
+	push	bc
+	ld	bc, (ix - 9)
+	push	bc
+	ld	bc, (ix - 6)
+	push	bc
+	push	hl
+	push	de
+	call	_drawNumber
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	a, (_secs)
+	ld	c, 10
+	call	__bremu
+	ld	e, a
+	ld	hl, (ix - 12)
+	ld	bc, 7
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	hl, (ix - 3)
+	add	hl, bc
+	ld	bc, (ix - 15)
+	push	bc
+	ld	bc, (ix - 9)
+	push	bc
+	ld	bc, (ix - 6)
+	push	bc
+	push	hl
+	push	de
+	call	_drawNumber
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+BB4_17:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_getDayOfWeek
+_getDayOfWeek:
+	ld	hl, -9
+	call	__frameset
+	ld	de, (ix + 9)
+	ld	bc, 3
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB5_2
+	ld	a, 0
+	jr	BB5_3
+BB5_2:
+	ld	a, -1
+BB5_3:
+	push	de
+	pop	bc
+	push	bc
+	pop	iy
+	ld	de, 12
+	add	iy, de
+	ld	l, a
+	rrc	l
+	sbc	hl, hl
+	ld	de, (ix + 12)
+	add	hl, de
+	ex	de, hl
+	bit	0, a
+	jr	nz, BB5_5
+	push	bc
+	pop	iy
+BB5_5:
+	push	de
+	pop	hl
+	ld	bc, 100
+	call	__idivs
+	ld	(ix - 6), hl
+	ld	bc, -100
+	call	__imulu
+	add	hl, de
+	ld	(ix - 3), hl
+	lea	hl, iy
+	ld	bc, 13
+	call	__imulu
+	add	hl, bc
+	push	de
+	pop	iy
+	ld	de, 5
+	push	de
+	pop	bc
+	call	__idivs
+	ld	(ix - 9), hl
+	ld	hl, (ix - 3)
+	ld	b, l
+	ld	c, 4
+	call	__bdivs
+	ld	l, a
+	rlc	l
+	sbc	hl, hl
+	push	hl
+	pop	de
+	ld	e, a
+	lea	hl, iy
+	ld	bc, 400
+	call	__idivs
+	push	hl
+	pop	iy
+	ld	hl, (ix - 6)
+	ld	bc, 5
+	call	__imulu
+	ld	bc, (ix + 6)
+	add	iy, bc
+	ld	bc, (ix - 9)
+	add	iy, bc
+	push	hl
+	pop	bc
+	add	iy, bc
+	ld	bc, (ix - 3)
+	add	iy, bc
+	add	iy, de
+	lea	hl, iy
+	ld	bc, 7
+	call	__irems
+	ld	a, l
+	add	a, 6
+	call	__bremu
+	or	a, a
+	sbc	hl, hl
+	ld	l, a
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_drawNumber
+_drawNumber:
+	call	__frameset0
+	ld	a, (ix + 6)
+	cp	a, 10
+	jr	nc, BB6_2
+	ld	d, (ix + 15)
+	ld	e, (ix + 18)
+	ld	iy, _switch.table.drawNumber
+	or	a, a
+	sbc	hl, hl
+	ld	l, a
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	bc
+	add	iy, bc
+	ld	hl, (iy)
+	ld	c, e
+	push	bc
+	ld	e, d
+	push	de
+	ld	a, (ix + 12)
+	ld	e, a
+	push	de
+	ld	de, (ix + 9)
+	push	de
+	push	hl
+	call	_gfx_ScaledSprite_NoClip
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+BB6_2:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_drawColon
+_drawColon:
+	call	__frameset0
+	ld	e, (ix + 9)
+	ld	c, (ix + 12)
+	ld	a, (_secs)
+	and	a, 1
+	bit	0, a
+	jr	z, BB7_2
+	ld	hl, _digitBlankColon_data
+	jr	BB7_3
+BB7_2:
+	ld	hl, _digitColon_data
+BB7_3:
+	push	af
+	ld	a, (ix + 15)
+	ld	iyl, a
+	pop	af
+	push	iy
+	push	bc
+	push	de
+	ld	de, (ix + 6)
+	push	de
+	push	hl
+	call	_gfx_ScaledSprite_NoClip
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_getTensDigit
+_getTensDigit:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	bc, 10
+	call	__idivs
+	push	hl
+	pop	de
+	push	de
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	push	hl
+	pop	bc
+	ex	de, hl
+	add	hl, bc
+	call	__ixor
+	ld	bc, 10
+	call	__iremu
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_getOnesDigit
+_getOnesDigit:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	bc, 10
+	call	__irems
+	push	hl
+	pop	de
+	push	de
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	push	hl
+	pop	bc
+	ex	de, hl
+	add	hl, bc
+	call	__ixor
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_main
+_main:
+	call	_gfx_Begin
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, 6
+	push	hl
+	ld	hl, _global_palette
+	push	hl
+	call	_gfx_SetPalette
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_gfx_SetDraw
+	pop	hl
+	call	_kb_Scan
+	ld	iy, -720878
+	ld	bc, 1
+	ld	de, 8
+BB10_1:
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jr	z, BB10_3
+	ld	l, (iy)
+	ld	h, (iy + 1)
+	ld	a, l
+	ld	hl, _prev_kb_Data
+	add	hl, bc
+	ld	(hl), a
+	inc	bc
+	lea	iy, iy + 2
+	jr	BB10_1
+BB10_3:
+	call	_step
+	bit	0, a
+	jr	nz, BB10_3
+	call	_gfx_End
+	or	a, a
+	sbc	hl, hl
+	ret
+	section	.text,"ax",@progbits
+
+	section	.data,"aw",@progbits
+	public	_digitBlank_data
+_digitBlank_data:
+	db	"", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, "", 0, "", 0, 0, "", 0, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str
+_.str:
+	db	"Sun", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.1
+_.str.1:
+	db	"Mon", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.2
+_.str.2:
+	db	"Tue", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.3
+_.str.3:
+	db	"Wed", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.4
+_.str.4:
+	db	"Thu", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.5
+_.str.5:
+	db	"Fri", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.6
+_.str.6:
+	db	"Sat", 0
+
+	section	.data,"aw",@progbits
+	public	_days_of_week
+_days_of_week:
+	dl	_.str
+	dl	_.str.1
+	dl	_.str.2
+	dl	_.str.3
+	dl	_.str.4
+	dl	_.str.5
+	dl	_.str.6
+
+	section	.rodata,"a",@progbits
+	private	_.str.7
+_.str.7:
+	db	"Jan", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.8
+_.str.8:
+	db	"Feb", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.9
+_.str.9:
+	db	"Mar", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.10
+_.str.10:
+	db	"Apr", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.11
+_.str.11:
+	db	"May", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.12
+_.str.12:
+	db	"Jun", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.13
+_.str.13:
+	db	"Jul", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.14
+_.str.14:
+	db	"Aug", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.15
+_.str.15:
+	db	"Sep", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.16
+_.str.16:
+	db	"Oct", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.17
+_.str.17:
+	db	"Nov", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.18
+_.str.18:
+	db	"Dec", 0
+
+	section	.data,"aw",@progbits
+	public	_months_of_year
+_months_of_year:
+	dl	_.str.7
+	dl	_.str.8
+	dl	_.str.9
+	dl	_.str.10
+	dl	_.str.11
+	dl	_.str.12
+	dl	_.str.13
+	dl	_.str.14
+	dl	_.str.15
+	dl	_.str.16
+	dl	_.str.17
+	dl	_.str.18
+
+	section	.rodata,"a",@progbits
+	private	_.str.19
+_.str.19:
+	db	"th", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.20
+_.str.20:
+	db	"st", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.21
+_.str.21:
+	db	"nd", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.22
+_.str.22:
+	db	"rd", 0
+
+	section	.data,"aw",@progbits
+	public	_date_postfixes
+_date_postfixes:
+	dl	_.str.19
+	dl	_.str.20
+	dl	_.str.21
+	dl	_.str.22
+
+	section	.bss,"aw",@nobits
+	public	_hrs
+_hrs:
+	rb	1
+
+	section	.bss,"aw",@nobits
+	public	_mins
+_mins:
+	rb	1
+
+	section	.bss,"aw",@nobits
+	public	_secs
+_secs:
+	rb	1
+
+	section	.bss,"aw",@nobits
+	public	_last_secs
+_last_secs:
+	rb	1
+
+	section	.data,"aw",@progbits
+	public	_clock_sx
+_clock_sx:
+	dd	0x40400000
+
+	section	.data,"aw",@progbits
+	public	_clock_sy
+_clock_sy:
+	dd	0x40400000
+
+	section	.data,"aw",@progbits
+	public	_analog_clock_scale
+_analog_clock_scale:
+	dd	0x3fe00000
+
+	section	.data,"aw",@progbits
+	public	_ampm_clock
+_ampm_clock:
+	db	1
+
+	section	.data,"aw",@progbits
+	public	_show_secs
+_show_secs:
+	db	1
+
+	section	.data,"aw",@progbits
+	public	_show_date
+_show_date:
+	db	1
+
+	section	.data,"aw",@progbits
+	public	_analog_clock
+_analog_clock:
+	db	1
+
+	section	.bss,"aw",@nobits
+	public	_show_help
+_show_help:
+	rb	1
+
+	section	.bss,"aw",@nobits
+	public	_seen_help_message
+_seen_help_message:
+	rb	1
+
+	section	.bss,"aw",@nobits
+	public	_notification_timer
+_notification_timer:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	private	_prev_kb_Data
+_prev_kb_Data:
+	rb	8
+
+	section	.bss,"aw",@nobits
+	public	_notification_msg
+_notification_msg:
+	rb	50
+
+	section	.rodata,"a",@progbits
+	private	_.str.23
+_.str.23:
+	db	"Press [F5] for help", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.24
+_.str.24:
+	db	"Scale: %.1f", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.25
+_.str.25:
+	db	"12hr Mode: %s", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.26
+_.str.26:
+	db	"ON", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.27
+_.str.27:
+	db	"OFF", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.28
+_.str.28:
+	db	"Seconds: %s", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.29
+_.str.29:
+	db	"Date: %s", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.30
+_.str.30:
+	db	"Mode: %s", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.31
+_.str.31:
+	db	"Analog", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.32
+_.str.32:
+	db	"Digital", 0
+
+	section	.data,"aw",@progbits
+	public	_digit0_data
+_digit0_data:
+	db	"", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, "", 0, "", 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_digit1_data
+_digit1_data:
+	db	"", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, "", 0, "", 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_digit2_data
+_digit2_data:
+	db	"", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, "", 0, "", 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_digit3_data
+_digit3_data:
+	db	"", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, "", 0, "", 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_digit4_data
+_digit4_data:
+	db	"", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, "", 0, "", 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_digit5_data
+_digit5_data:
+	db	"", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, "", 0, "", 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_digit6_data
+_digit6_data:
+	db	"", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, "", 0, "", 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_digit7_data
+_digit7_data:
+	db	"", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, "", 0, "", 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_digit8_data
+_digit8_data:
+	db	"", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, "", 0, "", 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_digit9_data
+_digit9_data:
+	db	"", 0, 0, "", 0, 0, "", 0, "", 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, "", 0, 0, 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, 0, 0, "", 0, "", 0, "", 0, "", 0, 0, "", 0, 0
+
+	section	.data,"aw",@progbits
+	public	_digitColon_data
+_digitColon_data:
+	db	"", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, ""
+	db	27 dup 0
+
+	section	.data,"aw",@progbits
+	public	_digitBlankColon_data
+_digitBlankColon_data:
+	db	"", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, ""
+	db	27 dup 0
+
+	section	.bss,"aw",@nobits
+	private	_trig_initialized
+_trig_initialized:
+	rb	1
+
+	section	.bss,"aw",@nobits
+	private	_min_cos
+_min_cos:
+	rb	240
+
+	section	.bss,"aw",@nobits
+	private	_min_sin
+_min_sin:
+	rb	240
+
+	section	.bss,"aw",@nobits
+	private	_h24_cos
+_h24_cos:
+	rb	96
+
+	section	.bss,"aw",@nobits
+	private	_h24_sin
+_h24_sin:
+	rb	96
+
+	section	.rodata,"a",@progbits
+	private	_.str.33
+_.str.33:
+	db	"----HELP----", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.34
+_.str.34:
+	db	"F1: 12/24 Hour", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.35
+_.str.35:
+	db	"F2: Seconds", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.36
+_.str.36:
+	db	"F3: Date", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.37
+_.str.37:
+	db	"F4: Analog/Digital", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.38
+_.str.38:
+	db	"F5: Toggle Help", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.39
+_.str.39:
+	db	"+/-: Scale Clock", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.40
+_.str.40:
+	db	"CLEAR: Exit", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.41
+_.str.41:
+	db	"%s, %s %d%s, %d", 0
+
+	section	.data,"aw",@progbits
+	public	_global_palette
+_global_palette:
+	db	0, 0, "Bÿÿ"
+
+	section	.rodata,"a",@progbits
+	private	_switch.table.drawNumber
+_switch.table.drawNumber:
+	dl	_digit0_data
+	dl	_digit1_data
+	dl	_digit2_data
+	dl	_digit3_data
+	dl	_digit4_data
+	dl	_digit5_data
+	dl	_digit6_data
+	dl	_digit7_data
+	dl	_digit8_data
+	dl	_digit9_data
+
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	ident	"clang version 15.0.7 (https://github.com/CE-Programming/llvm-project 31b787336940cbc96d054033c3d843f344507042)"
+	extern	__Unwind_SjLj_Register
+	extern	__bremu
+	extern	_gfx_SetTextFGColor
+	extern	_gfx_Begin
+	extern	_gfx_Line
+	extern	__fadd
+	extern	__sshl
+	extern	_gfx_SetPalette
+	extern	_gfx_ScaledSprite_NoClip
+	extern	__sand
+	extern	__ishl
+	extern	__ftol
+	extern	__setflag
+	extern	__idivs
+	extern	_gfx_Blit
+	extern	_gfx_Circle
+	extern	__ixor
+	extern	__ltof
+	extern	_boot_GetTime
+	extern	__bdivs
+	extern	__bdivu
+	extern	__frameset
+	extern	_gfx_SetTextBGColor
+	extern	_sprintf
+	extern	_kb_Scan
+	extern	_sin
+	extern	_gfx_GetStringWidth
+	extern	__ultof
+	extern	__ishru
+	extern	__fmul
+	extern	_gfx_SetDraw
+	extern	_gfx_FillScreen
+	extern	__Unwind_SjLj_Unregister
+	extern	__irems
+	extern	__iremu
+	extern	__fdiv
+	extern	__imulu
+	extern	_gfx_SetColor
+	extern	_boot_GetDate
+	extern	_gfx_PrintStringXY
+	extern	_gfx_End
+	extern	__fcmp
+	extern	_cos
+	extern	__frameset0
+	extern	_gfx_SetTextScale
