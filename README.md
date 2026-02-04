@@ -6,13 +6,13 @@
  
 **Analog Clock**
  
-![Analog Clock](https://raw.githubusercontent.com/Logboy2000/TIClockApp/refs/heads/main/screenshots/1.png "Analog Clock")
+![Analog Clock](https://raw.githubusercontent.com/Logboy2000/TIClockApp/refs/heads/main/screenshots/Analog.png "Analog Clock")
 
 **Digital Clock**
  
-![Digital Clock](https://raw.githubusercontent.com/Logboy2000/TIClockApp/refs/heads/main/screenshots/2.png "Digital Clock")
+![Digital Clock](https://raw.githubusercontent.com/Logboy2000/TIClockApp/refs/heads/main/screenshots/Digital.png "Digital Clock")
 
 **Help Menu**
 
-![Help Menu](https://raw.githubusercontent.com/Logboy2000/TIClockApp/refs/heads/main/screenshots/Help.png "Help Menu")
+![Help Menu](https://raw.githubusercontent.com/Logboy2000/TIClockApp/refs/heads/main/screenshots/HelpMenu.png "Help Menu")
 
